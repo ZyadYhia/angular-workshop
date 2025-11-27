@@ -21,11 +21,27 @@ class CatFactory extends Factory
      */
     public function definition()
     {
+        $categories = [
+            ['en' => 'Programming', 'ar' => 'البرمجة'],
+            ['en' => 'Design', 'ar' => 'التصميم'],
+            ['en' => 'Marketing', 'ar' => 'التسويق'],
+            ['en' => 'Business', 'ar' => 'الأعمال'],
+            ['en' => 'Photography', 'ar' => 'التصوير'],
+            ['en' => 'Music', 'ar' => 'الموسيقى'],
+            ['en' => 'Health', 'ar' => 'الصحة'],
+            ['en' => 'Fitness', 'ar' => 'اللياقة البدنية'],
+            ['en' => 'Languages', 'ar' => 'اللغات'],
+            ['en' => 'Science', 'ar' => 'العلوم'],
+        ];
+
+        $category = $this->faker->randomElement($categories);
+
         return [
-            'name' => json_encode([
-                'en' => $this->faker->word(),
-                'ar' => $this->faker->word(),
-            ]),
+            'name' => [
+                'en' => $category['en'],
+                'ar' => $category['ar'],
+            ],
+            'active' => true,
         ];
     }
 }

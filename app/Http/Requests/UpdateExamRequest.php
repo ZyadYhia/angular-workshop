@@ -11,7 +11,9 @@ class UpdateExamRequest extends FormRequest
      */
     public function authorize(): bool
     {
-        return true;
+        $exam = $this->route('exam');
+
+        return $this->user()->can('update', $exam);
     }
 
     /**

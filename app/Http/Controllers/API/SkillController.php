@@ -27,10 +27,10 @@ class SkillController extends Controller
     public function store(StoreSkillRequest $request)
     {
         $skill = Skill::create([
-            'name' => json_encode([
+            'name' => [
                 'en' => $request->name_en,
                 'ar' => $request->name_ar,
-            ]),
+            ],
             'img' => $request->img,
             'cat_id' => $request->cat_id,
             'active' => $request->input('active', true),
@@ -41,18 +41,11 @@ class SkillController extends Controller
 
     public function update(UpdateSkillRequest $request, Skill $skill)
     {
-        $nameData = json_decode($skill->name, true);
-
-        if ($request->has('name_en')) {
-            $nameData['en'] = $request->name_en;
-        }
-
-        if ($request->has('name_ar')) {
-            $nameData['ar'] = $request->name_ar;
-        }
-
         $skill->update([
-            'name' => json_encode($nameData),
+            'name' => [
+                'en' => $request->input('name_en', $skill->getTranslation('name', 'en')),
+                'ar' => $request->input('name_ar', $skill->getTranslation('name', 'ar')),
+            ],
             'img' => $request->input('img', $skill->img),
             'cat_id' => $request->input('cat_id', $skill->cat_id),
             'active' => $request->input('active', $skill->active),
@@ -63,6 +56,15 @@ class SkillController extends Controller
 
     public function destroy(Skill $skill)
     {
+        $this->authorize('delete', $skill);
+
+        // Delete all associated exams and their questions
+        foreach ($skill->exams as $exam) {
+            $exam->questions()->delete();
+            $exam->delete();
+        }
+
+        // Delete the skill
         $skill->delete();
 
         return response()->json([

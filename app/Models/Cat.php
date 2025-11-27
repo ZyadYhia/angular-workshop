@@ -4,24 +4,19 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
-use Illuminate\Support\Facades\App;
+use Spatie\Translatable\HasTranslations;
 
 class Cat extends Model
 {
-    use HasFactory;
+    use HasFactory, HasTranslations;
 
     protected $guarded = ['id', 'created_at', 'updated_at'];
+
+    public array $translatable = ['name'];
 
     public function skills()
     {
         return $this->hasMany(Skill::class);
-    }
-
-    public function name($lang = null)
-    {
-        $lang = $lang ?? App::getLocale();
-
-        return json_decode($this->name)->$lang;
     }
 
     public function scopeActive($query)

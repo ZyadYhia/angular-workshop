@@ -17,49 +17,55 @@ class CatController extends Controller
         return CatResource::collection($cats);
     }
 
-    public function show(Cat $cat)
+    public function show(Cat $category)
     {
-        $cat->load('skills');
+        $category->load('skills');
 
-        return CatResource::make($cat);
+        return CatResource::make($category);
     }
 
     public function store(StoreCatRequest $request)
     {
         $cat = Cat::create([
-            'name' => json_encode([
+            'name' => [
                 'en' => $request->name_en,
                 'ar' => $request->name_ar,
-            ]),
+            ],
             'active' => $request->input('active', true),
         ]);
 
         return CatResource::make($cat);
     }
 
-    public function update(UpdateCatRequest $request, Cat $cat)
+    public function update(UpdateCatRequest $request, Cat $category)
     {
-        $nameData = json_decode($cat->name, true);
-
-        if ($request->has('name_en')) {
-            $nameData['en'] = $request->name_en;
-        }
-
-        if ($request->has('name_ar')) {
-            $nameData['ar'] = $request->name_ar;
-        }
-
-        $cat->update([
-            'name' => json_encode($nameData),
-            'active' => $request->input('active', $cat->active),
+        $category->update([
+            'name' => [
+                'en' => $request->input('name_en', $category->getTranslation('name', 'en')),
+                'ar' => $request->input('name_ar', $category->getTranslation('name', 'ar')),
+            ],
+            'active' => $request->input('active', $category->active),
         ]);
 
-        return CatResource::make($cat);
+        return CatResource::make($category);
     }
 
-    public function destroy(Cat $cat)
+    public function destroy(Cat $category)
     {
-        $cat->delete();
+        $this->authorize('delete', $category);
+
+        // Delete all associated skills and their exams
+        foreach ($category->skills as $skill) {
+            // Delete exams and their questions
+            foreach ($skill->exams as $exam) {
+                $exam->questions()->delete();
+                $exam->delete();
+            }
+            $skill->delete();
+        }
+
+        // Delete the category
+        $category->delete();
 
         return response()->json([
             'message' => 'Category deleted successfully',

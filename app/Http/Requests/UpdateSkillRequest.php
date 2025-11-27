@@ -11,7 +11,9 @@ class UpdateSkillRequest extends FormRequest
      */
     public function authorize(): bool
     {
-        return true;
+        $skill = $this->route('skill');
+
+        return $this->user()->can('update', $skill);
     }
 
     /**

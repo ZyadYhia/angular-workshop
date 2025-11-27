@@ -16,8 +16,11 @@ class CatResource extends JsonResource
     {
         return [
             'id' => $this->id,
-            'name_en' => $this->name('en'),
-            'name_ar' => $this->name('ar'),
+            'name' => [
+                'en' => $this->getTranslation('name', 'en'),
+                'ar' => $this->getTranslation('name', 'ar'),
+            ],
+            'active' => $this->active,
             'skills' => SkillResource::collection($this->whenLoaded('skills')),
         ];
     }

@@ -4,13 +4,15 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
-use Illuminate\Support\Facades\App;
+use Spatie\Translatable\HasTranslations;
 
 class Exam extends Model
 {
+    use HasFactory, HasTranslations;
+
     protected $guarded = ['id', 'created_at', 'updated_at'];
 
-    use HasFactory;
+    public array $translatable = ['name', 'desc'];
 
     public function skill()
     {
@@ -27,20 +29,6 @@ class Exam extends Model
         return $this->belongsToMany(User::class)
             ->withPivot('score', 'time_mins', 'status')
             ->withTimestamps();
-    }
-
-    public function name($lang = null)
-    {
-        $lang = $lang ?? App::getLocale();
-
-        return json_decode($this->name)->$lang;
-    }
-
-    public function desc($lang = null)
-    {
-        $lang = $lang ?? App::getLocale();
-
-        return json_decode($this->desc)->$lang;
     }
 
     public function scopeActive($query)

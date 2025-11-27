@@ -28,14 +28,14 @@ class ExamController extends Controller
     public function store(StoreExamRequest $request)
     {
         $exam = Exam::create([
-            'name' => json_encode([
+            'name' => [
                 'en' => $request->name_en,
                 'ar' => $request->name_ar,
-            ]),
-            'desc' => json_encode([
+            ],
+            'desc' => [
                 'en' => $request->desc_en,
                 'ar' => $request->desc_ar,
-            ]),
+            ],
             'img' => $request->img,
             'questions_no' => $request->questions_no,
             'difficulty' => $request->difficulty,
@@ -49,28 +49,15 @@ class ExamController extends Controller
 
     public function update(UpdateExamRequest $request, Exam $exam)
     {
-        $nameData = json_decode($exam->name, true);
-        $descData = json_decode($exam->desc, true);
-
-        if ($request->has('name_en')) {
-            $nameData['en'] = $request->name_en;
-        }
-
-        if ($request->has('name_ar')) {
-            $nameData['ar'] = $request->name_ar;
-        }
-
-        if ($request->has('desc_en')) {
-            $descData['en'] = $request->desc_en;
-        }
-
-        if ($request->has('desc_ar')) {
-            $descData['ar'] = $request->desc_ar;
-        }
-
         $exam->update([
-            'name' => json_encode($nameData),
-            'desc' => json_encode($descData),
+            'name' => [
+                'en' => $request->input('name_en', $exam->getTranslation('name', 'en')),
+                'ar' => $request->input('name_ar', $exam->getTranslation('name', 'ar')),
+            ],
+            'desc' => [
+                'en' => $request->input('desc_en', $exam->getTranslation('desc', 'en')),
+                'ar' => $request->input('desc_ar', $exam->getTranslation('desc', 'ar')),
+            ],
             'img' => $request->input('img', $exam->img),
             'questions_no' => $request->input('questions_no', $exam->questions_no),
             'difficulty' => $request->input('difficulty', $exam->difficulty),
@@ -84,6 +71,12 @@ class ExamController extends Controller
 
     public function destroy(Exam $exam)
     {
+        $this->authorize('delete', $exam);
+
+        // Delete associated questions first
+        $exam->questions()->delete();
+
+        // Delete the exam
         $exam->delete();
 
         return response()->json([
@@ -95,11 +88,17 @@ class ExamController extends Controller
     {
         $exam = Exam::with('questions')->findOrFail($id);
 
+        $this->authorize('viewQuestions', $exam);
+
         return ExamResource::make($exam);
     }
 
     public function start($examId, Request $request)
     {
+        $exam = Exam::findOrFail($examId);
+
+        $this->authorize('take', $exam);
+
         $user = $request->user();
         if (! $user->exams->contains($examId)) {
             $user->exams()->attach($examId);
@@ -117,6 +116,10 @@ class ExamController extends Controller
 
     public function submit(Request $request, $examId)
     {
+        $exam = Exam::findOrFail($examId);
+
+        $this->authorize('take', $exam);
+
         $validator = Validator::make($request->all(), [
             'answers' => 'required| ',
             'answers.*' => 'required|in:1,2,3,4',
@@ -126,7 +129,6 @@ class ExamController extends Controller
         }
 
         // calculating score
-        $exam = Exam::findOrFail($examId);
         $points = 0;
         $totalQuesNum = $exam->questions->count();
         foreach ($exam->questions as $question) {

@@ -18,16 +18,23 @@ Route::prefix('auth')->group(function () {
     });
 });
 
+// Public routes - anyone can view
 Route::apiResource('categories', CatController::class)->only(['index', 'show']);
-Route::apiResource('categories', CatController::class)->only(['store', 'update', 'destroy'])->middleware('auth:api');
-
 Route::apiResource('skills', SkillController::class)->only(['index', 'show']);
-Route::apiResource('skills', SkillController::class)->only(['store', 'update', 'destroy'])->middleware('auth:api');
-
 Route::apiResource('exams', ExamController::class)->only(['index', 'show']);
-Route::apiResource('exams', ExamController::class)->only(['store', 'update', 'destroy'])->middleware('auth:api');
 
-Route::middleware(['auth:api'])->group(function () {
+// Protected routes - require authentication and permissions
+Route::middleware('auth:api')->group(function () {
+    // Category management - requires ManageCategories permission
+    Route::apiResource('categories', CatController::class)->only(['store', 'update', 'destroy']);
+
+    // Skill management - requires ManageCategories permission
+    Route::apiResource('skills', SkillController::class)->only(['store', 'update', 'destroy']);
+
+    // Exam management - requires appropriate exam permissions
+    Route::apiResource('exams', ExamController::class)->only(['store', 'update', 'destroy']);
+
+    // Exam taking - requires TakeExam permission
     Route::get('exams/show-questions/{id}', [ExamController::class, 'showQuestions']);
     Route::post('exams/start/{id}', [ExamController::class, 'start']);
     Route::post('exams/submit/{id}', [ExamController::class, 'submit']);

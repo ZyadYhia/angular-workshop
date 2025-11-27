@@ -16,10 +16,14 @@ class ExamResource extends JsonResource
     {
         return [
             'id' => $this->id,
-            'name_en' => $this->name('en'),
-            'name_ar' => $this->name('ar'),
-            'desc_en' => $this->desc('en'),
-            'desc_ar' => $this->desc('ar'),
+            'name' => [
+                'en' => $this->getTranslation('name', 'en'),
+                'ar' => $this->getTranslation('name', 'ar'),
+            ],
+            'desc' => [
+                'en' => $this->getTranslation('desc', 'en'),
+                'ar' => $this->getTranslation('desc', 'ar'),
+            ],
             'image' => asset("storage/uploads/{$this->img}"),
             'questions_no' => $this->questions_no,
             'difficulty' => $this->difficulty,

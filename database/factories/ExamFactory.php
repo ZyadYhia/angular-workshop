@@ -24,19 +24,31 @@ class ExamFactory extends Factory
         static $i = 0;
         $i++;
 
+        $examNames = [
+            ['en' => 'Fundamentals', 'ar' => 'الأساسيات'],
+            ['en' => 'Advanced Concepts', 'ar' => 'المفاهيم المتقدمة'],
+            ['en' => 'Practical Applications', 'ar' => 'التطبيقات العملية'],
+            ['en' => 'Best Practices', 'ar' => 'أفضل الممارسات'],
+            ['en' => 'Project Development', 'ar' => 'تطوير المشاريع'],
+            ['en' => 'Professional Techniques', 'ar' => 'التقنيات الاحترافية'],
+        ];
+
+        $name = $this->faker->randomElement($examNames);
+
         return [
-            'name' => json_encode([
-                'en' => $this->faker->word(),
-                'ar' => $this->faker->word(),
-            ]),
-            'desc' => json_encode([
-                'en' => $this->faker->text(5000),
-                'ar' => $this->faker->text(5000),
-            ]),
+            'name' => [
+                'en' => $name['en'],
+                'ar' => $name['ar'],
+            ],
+            'desc' => [
+                'en' => 'This exam covers important topics and skills. It includes multiple choice questions designed to test your knowledge and understanding. You will be evaluated on your comprehension of key concepts and ability to apply them in practical scenarios. The exam is timed and requires careful attention to detail.',
+                'ar' => 'يغطي هذا الاختبار موضوعات ومهارات مهمة. يتضمن أسئلة متعددة الخيارات مصممة لاختبار معرفتك وفهمك. سيتم تقييمك على فهمك للمفاهيم الأساسية وقدرتك على تطبيقها في سيناريوهات عملية. الاختبار محدد بوقت ويتطلب اهتماماً دقيقاً بالتفاصيل.',
+            ],
             'img' => "exams/$i.png",
             'questions_no' => 15,
             'difficulty' => $this->faker->numberBetween(1, 5),
             'duration_mins' => $this->faker->numberBetween(1, 3) * 30,
+            'active' => true,
         ];
     }
 }

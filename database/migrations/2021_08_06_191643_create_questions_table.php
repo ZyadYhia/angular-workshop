@@ -16,11 +16,11 @@ class CreateQuestionsTable extends Migration
         Schema::create('questions', function (Blueprint $table) {
             $table->bigIncrements('id');
             $table->foreignId('exam_id')->constrained();
-            $table->text('title');
-            $table->string('option_1', 255);
-            $table->string('option_2', 255);
-            $table->string('option_3', 255);
-            $table->string('option_4', 255);
+            $table->json('title');
+            $table->json('option_1');
+            $table->json('option_2');
+            $table->json('option_3');
+            $table->json('option_4');
             $table->tinyInteger('right_ans');
             $table->timestamps();
         });

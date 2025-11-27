@@ -15,8 +15,8 @@ class CreateExamsTable extends Migration
     {
         Schema::create('exams', function (Blueprint $table) {
             $table->bigIncrements('id');
-            $table->text('name');
-            $table->text('desc');
+            $table->json('name');
+            $table->json('desc');
             $table->string('img', 50);
             $table->tinyInteger('questions_no');
             $table->tinyInteger('difficulty');

@@ -15,7 +15,7 @@ class CreateSkillsTable extends Migration
     {
         Schema::create('skills', function (Blueprint $table) {
             $table->bigIncrements('id');
-            $table->text('name');
+            $table->json('name');
             $table->string('img', 50);
             $table->boolean('active')->default(true);
             $table->foreignId('cat_id')->constrained();

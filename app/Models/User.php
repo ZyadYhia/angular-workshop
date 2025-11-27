@@ -4,6 +4,7 @@ namespace App\Models;
 
 // use Illuminate\Contracts\Auth\MustVerifyEmail;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
+use Illuminate\Database\Eloquent\Relations\BelongsToMany;
 use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
@@ -80,5 +81,12 @@ class User extends Authenticatable implements JWTSubject
     public function refreshTokens(): HasMany
     {
         return $this->hasMany(RefreshToken::class);
+    }
+
+    public function exams(): BelongsToMany
+    {
+        return $this->belongsToMany(Exam::class)
+            ->withPivot('score', 'time_mins', 'status')
+            ->withTimestamps();
     }
 }

@@ -11,7 +11,9 @@ class UpdateCatRequest extends FormRequest
      */
     public function authorize(): bool
     {
-        return true;
+        $cat = $this->route('category');
+
+        return $this->user()->can('update', $cat);
     }
 
     /**

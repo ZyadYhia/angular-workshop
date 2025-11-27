@@ -21,12 +21,44 @@ class QuestionFactory extends Factory
      */
     public function definition()
     {
+        $questions = [
+            [
+                'title' => ['en' => 'What is the correct syntax for this concept?', 'ar' => 'ما هو التركيب الصحيح لهذا المفهوم؟'],
+                'options' => [
+                    ['en' => 'Option A', 'ar' => 'الخيار أ'],
+                    ['en' => 'Option B', 'ar' => 'الخيار ب'],
+                    ['en' => 'Option C', 'ar' => 'الخيار ج'],
+                    ['en' => 'Option D', 'ar' => 'الخيار د'],
+                ],
+            ],
+            [
+                'title' => ['en' => 'Which statement best describes this process?', 'ar' => 'أي عبارة تصف هذه العملية بشكل أفضل؟'],
+                'options' => [
+                    ['en' => 'First choice', 'ar' => 'الاختيار الأول'],
+                    ['en' => 'Second choice', 'ar' => 'الاختيار الثاني'],
+                    ['en' => 'Third choice', 'ar' => 'الاختيار الثالث'],
+                    ['en' => 'Fourth choice', 'ar' => 'الاختيار الرابع'],
+                ],
+            ],
+            [
+                'title' => ['en' => 'How would you implement this feature?', 'ar' => 'كيف ستقوم بتنفيذ هذه الميزة؟'],
+                'options' => [
+                    ['en' => 'Method one', 'ar' => 'الطريقة الأولى'],
+                    ['en' => 'Method two', 'ar' => 'الطريقة الثانية'],
+                    ['en' => 'Method three', 'ar' => 'الطريقة الثالثة'],
+                    ['en' => 'Method four', 'ar' => 'الطريقة الرابعة'],
+                ],
+            ],
+        ];
+
+        $question = $this->faker->randomElement($questions);
+
         return [
-            'title' => $this->faker->sentence(),
-            'option_1' => $this->faker->sentence(5, true),
-            'option_2' => $this->faker->sentence(5, true),
-            'option_3' => $this->faker->sentence(5, true),
-            'option_4' => $this->faker->sentence(5, true),
+            'title' => $question['title'],
+            'option_1' => $question['options'][0],
+            'option_2' => $question['options'][1],
+            'option_3' => $question['options'][2],
+            'option_4' => $question['options'][3],
             'right_ans' => $this->faker->numberBetween(1, 4),
         ];
     }
