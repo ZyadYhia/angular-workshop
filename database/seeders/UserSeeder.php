@@ -13,67 +13,48 @@ class UserSeeder extends Seeder
      */
     public function run(): void
     {
-        // Create Admin User
-        $admin = User::factory()->create([
-            'name' => 'Admin User',
-            'email' => 'admin@example.com',
-        ]);
-        $admin->assignRole(Role::Admin->value);
+        // Get existing user emails
+        $existingEmails = User::pluck('email')->toArray();
 
-        // Create Instructor Users
-        $instructor1 = User::factory()->create([
-            'name' => 'John Instructor',
-            'email' => 'instructor1@example.com',
-        ]);
-        $instructor1->assignRole(Role::Instructor->value);
-
-        $instructor2 = User::factory()->create([
-            'name' => 'Sarah Teacher',
-            'email' => 'instructor2@example.com',
-        ]);
-        $instructor2->assignRole(Role::Instructor->value);
-
-        $instructor3 = User::factory()->create([
-            'name' => 'Michael Professor',
-            'email' => 'instructor3@example.com',
-        ]);
-        $instructor3->assignRole(Role::Instructor->value);
-
-        // Create Moderator Users
-        $moderator1 = User::factory()->create([
-            'name' => 'Mike Moderator',
-            'email' => 'moderator1@example.com',
-        ]);
-        $moderator1->assignRole(Role::Moderator->value);
-
-        $moderator2 = User::factory()->create([
-            'name' => 'Lisa Moderator',
-            'email' => 'moderator2@example.com',
-        ]);
-        $moderator2->assignRole(Role::Moderator->value);
-
-        // Create Named Student Users
-        $students = [
-            ['name' => 'Alice Johnson', 'email' => 'alice.johnson@example.com'],
-            ['name' => 'Bob Smith', 'email' => 'bob.smith@example.com'],
-            ['name' => 'Charlie Brown', 'email' => 'charlie.brown@example.com'],
-            ['name' => 'Diana Williams', 'email' => 'diana.williams@example.com'],
-            ['name' => 'Eve Davis', 'email' => 'eve.davis@example.com'],
-            ['name' => 'Frank Miller', 'email' => 'frank.miller@example.com'],
-            ['name' => 'Grace Wilson', 'email' => 'grace.wilson@example.com'],
-            ['name' => 'Henry Moore', 'email' => 'henry.moore@example.com'],
-            ['name' => 'Ivy Taylor', 'email' => 'ivy.taylor@example.com'],
-            ['name' => 'Jack Anderson', 'email' => 'jack.anderson@example.com'],
+        // Define users to create
+        $usersToCreate = [
+            ['name' => 'Admin User', 'email' => 'admin@example.com', 'role' => Role::Admin],
+            ['name' => 'John Instructor', 'email' => 'instructor1@example.com', 'role' => Role::Instructor],
+            ['name' => 'Sarah Teacher', 'email' => 'instructor2@example.com', 'role' => Role::Instructor],
+            ['name' => 'Michael Professor', 'email' => 'instructor3@example.com', 'role' => Role::Instructor],
+            ['name' => 'Mike Moderator', 'email' => 'moderator1@example.com', 'role' => Role::Moderator],
+            ['name' => 'Lisa Moderator', 'email' => 'moderator2@example.com', 'role' => Role::Moderator],
+            ['name' => 'Alice Johnson', 'email' => 'alice.johnson@example.com', 'role' => Role::Student],
+            ['name' => 'Bob Smith', 'email' => 'bob.smith@example.com', 'role' => Role::Student],
+            ['name' => 'Charlie Brown', 'email' => 'charlie.brown@example.com', 'role' => Role::Student],
+            ['name' => 'Diana Williams', 'email' => 'diana.williams@example.com', 'role' => Role::Student],
+            ['name' => 'Eve Davis', 'email' => 'eve.davis@example.com', 'role' => Role::Student],
+            ['name' => 'Frank Miller', 'email' => 'frank.miller@example.com', 'role' => Role::Student],
+            ['name' => 'Grace Wilson', 'email' => 'grace.wilson@example.com', 'role' => Role::Student],
+            ['name' => 'Henry Moore', 'email' => 'henry.moore@example.com', 'role' => Role::Student],
+            ['name' => 'Ivy Taylor', 'email' => 'ivy.taylor@example.com', 'role' => Role::Student],
+            ['name' => 'Jack Anderson', 'email' => 'jack.anderson@example.com', 'role' => Role::Student],
         ];
 
-        foreach ($students as $studentData) {
-            $student = User::factory()->create($studentData);
-            $student->assignRole(Role::Student->value);
+        // Create only non-existing users
+        foreach ($usersToCreate as $userData) {
+            if (! in_array($userData['email'], $existingEmails)) {
+                $user = User::factory()->create([
+                    'name' => $userData['name'],
+                    'email' => $userData['email'],
+                ]);
+                $user->assignRole($userData['role']->value);
+            }
         }
 
-        // Create additional random students
-        User::factory(15)->create()->each(function ($user) {
-            $user->assignRole(Role::Student->value);
-        });
+        // Create additional random students if total student count is less than 25
+        $currentStudentCount = User::role(Role::Student->value)->count();
+        $studentsToCreate = max(0, 25 - $currentStudentCount);
+
+        if ($studentsToCreate > 0) {
+            User::factory($studentsToCreate)->create()->each(function ($user) {
+                $user->assignRole(Role::Student->value);
+            });
+        }
     }
 }

@@ -7,6 +7,8 @@ use App\Http\Controllers\Controller;
 use App\Http\Requests\LoginRequest;
 use App\Http\Requests\RefreshTokenRequest;
 use App\Http\Requests\RegisterRequest;
+use App\Http\Requests\UpdatePasswordRequest;
+use App\Http\Requests\UpdateProfileRequest;
 use App\Http\Resources\UserResource;
 use App\Models\RefreshToken;
 use App\Models\User;
@@ -43,7 +45,9 @@ class AuthController extends Controller
         $credentials = $request->validated();
 
         if (! $token = auth()->attempt($credentials)) {
-            return response()->json(['error' => 'Unauthorized'], 401);
+            return response()->json([
+                'message' => 'The provided credentials are incorrect',
+            ], 422);
         }
 
         $user = auth()->user();
@@ -109,5 +113,43 @@ class AuthController extends Controller
         auth()->logout();
 
         return response()->json(['message' => 'Successfully logged out']);
+    }
+
+    public function updateProfile(UpdateProfileRequest $request)
+    {
+        $user = auth()->user();
+        $validated = $request->validated();
+
+        $user->update($validated);
+
+        return response()->json([
+            'message' => 'Profile updated successfully',
+            'user' => UserResource::make($user),
+        ]);
+    }
+
+    public function updatePassword(UpdatePasswordRequest $request)
+    {
+        $user = auth()->user();
+        $validated = $request->validated();
+
+        // Verify current password
+        if (! \Hash::check($validated['current_password'], $user->password)) {
+            return response()->json([
+                'message' => 'The current password is incorrect',
+                'errors' => [
+                    'current_password' => ['The current password is incorrect'],
+                ],
+            ], 422);
+        }
+
+        // Update password
+        $user->update([
+            'password' => $validated['password'],
+        ]);
+
+        return response()->json([
+            'message' => 'Password updated successfully',
+        ]);
     }
 }

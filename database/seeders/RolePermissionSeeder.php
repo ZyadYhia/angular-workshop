@@ -18,13 +18,8 @@ class RolePermissionSeeder extends Seeder
         // Reset cached roles and permissions
         app()[\Spatie\Permission\PermissionRegistrar::class]->forgetCachedPermissions();
 
-        // Create all permissions
-        foreach (Permission::cases() as $permission) {
-            PermissionModel::firstOrCreate(
-                ['name' => $permission->value],
-                ['name' => $permission->value]
-            );
-        }
+        // Load existing permissions or create new ones
+        $this->createOrLoadPermissions();
 
         // Create roles and assign permissions
         $this->createAdminRole();
@@ -34,11 +29,39 @@ class RolePermissionSeeder extends Seeder
     }
 
     /**
+     * Create or load all permissions into cache.
+     */
+    protected function createOrLoadPermissions(): void
+    {
+        $existingPermissions = PermissionModel::where('guard_name', 'api')
+            ->pluck('id', 'name')
+            ->toArray();
+
+        $permissionsToCreate = [];
+
+        foreach (Permission::cases() as $permission) {
+            if (! isset($existingPermissions[$permission->value])) {
+                $permissionsToCreate[] = [
+                    'name' => $permission->value,
+                    'guard_name' => 'api',
+                    'created_at' => now(),
+                    'updated_at' => now(),
+                ];
+            }
+        }
+
+        // Batch insert new permissions
+        if (! empty($permissionsToCreate)) {
+            PermissionModel::insert($permissionsToCreate);
+        }
+    }
+
+    /**
      * Create admin role with all permissions.
      */
     protected function createAdminRole(): void
     {
-        $admin = RoleModel::firstOrCreate(['name' => Role::Admin->value]);
+        $admin = RoleModel::firstOrCreate(['name' => Role::Admin->value, 'guard_name' => 'api']);
         $admin->givePermissionTo(Permission::values());
     }
 
@@ -47,7 +70,7 @@ class RolePermissionSeeder extends Seeder
      */
     protected function createInstructorRole(): void
     {
-        $instructor = RoleModel::firstOrCreate(['name' => Role::Instructor->value]);
+        $instructor = RoleModel::firstOrCreate(['name' => Role::Instructor->value, 'guard_name' => 'api']);
 
         $instructor->givePermissionTo([
             // Exam Management
@@ -83,7 +106,7 @@ class RolePermissionSeeder extends Seeder
      */
     protected function createStudentRole(): void
     {
-        $student = RoleModel::firstOrCreate(['name' => Role::Student->value]);
+        $student = RoleModel::firstOrCreate(['name' => Role::Student->value, 'guard_name' => 'api']);
 
         $student->givePermissionTo([
             // Exam Taking
@@ -101,7 +124,7 @@ class RolePermissionSeeder extends Seeder
      */
     protected function createModeratorRole(): void
     {
-        $moderator = RoleModel::firstOrCreate(['name' => Role::Moderator->value]);
+        $moderator = RoleModel::firstOrCreate(['name' => Role::Moderator->value, 'guard_name' => 'api']);
 
         $moderator->givePermissionTo([
             // Exam Management

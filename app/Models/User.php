@@ -16,6 +16,13 @@ class User extends Authenticatable implements JWTSubject
     use HasFactory, HasRoles, Notifiable;
 
     /**
+     * The guard name for Spatie permission package.
+     *
+     * @var string
+     */
+    protected $guard_name = 'api';
+
+    /**
      * The attributes that are mass assignable.
      *
      * @var list<string>

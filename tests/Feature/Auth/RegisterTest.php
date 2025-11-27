@@ -1,13 +1,8 @@
 <?php
 
 use App\Models\User;
-use Illuminate\Foundation\Testing\RefreshDatabase;
-
-uses(RefreshDatabase::class);
 
 it('can register a new user with student role', function () {
-    $this->seed(\Database\Seeders\RolePermissionSeeder::class);
-
     $response = $this->postJson('/api/auth/register', [
         'name' => 'Test Student',
         'email' => 'student@example.com',
