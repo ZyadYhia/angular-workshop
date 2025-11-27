@@ -9,8 +9,10 @@ use App\Http\Requests\RefreshTokenRequest;
 use App\Http\Requests\RegisterRequest;
 use App\Http\Requests\UpdatePasswordRequest;
 use App\Http\Requests\UpdateProfileRequest;
+use App\Http\Resources\UserProfileResource;
 use App\Http\Resources\UserResource;
 use App\Models\RefreshToken;
+use App\Models\Skill;
 use App\Models\User;
 use Illuminate\Http\Request;
 
@@ -102,6 +104,67 @@ class AuthController extends Controller
         $user = auth()->user();
 
         return response()->json(UserResource::make($user));
+    }
+
+    public function profile()
+    {
+        $user = auth()->user();
+
+        // Load enrolled exams with pivot data
+        $user->load(['exams' => function ($query) {
+            $query->with('skill')->orderBy('exam_user.created_at', 'desc');
+        }]);
+
+        // Get unique skills from enrolled exams
+        $enrolledSkills = collect();
+        $skillIds = $user->exams->pluck('skill_id')->unique();
+
+        foreach ($skillIds as $skillId) {
+            $skill = Skill::with(['exams' => function ($query) use ($user) {
+                $query->whereHas('users', function ($q) use ($user) {
+                    $q->where('users.id', $user->id);
+                });
+            }])->find($skillId);
+
+            if ($skill) {
+                // Get user's exams for this skill
+                $userExamsForSkill = $user->exams->where('skill_id', $skill->id);
+                $completedExams = $userExamsForSkill->where('pivot.status', 'closed');
+
+                $skill->statistics = [
+                    'total_exams' => $userExamsForSkill->count(),
+                    'completed_exams' => $completedExams->count(),
+                    'average_score' => $completedExams->isNotEmpty()
+                        ? round($completedExams->avg('pivot.score'), 2)
+                        : null,
+                    'highest_score' => $completedExams->isNotEmpty()
+                        ? $completedExams->max('pivot.score')
+                        : null,
+                    'total_time_spent' => $completedExams->sum('pivot.time_mins'),
+                ];
+
+                // Manually set the exams for this skill with pivot data
+                $skill->setRelation('exams', $userExamsForSkill->values());
+
+                $enrolledSkills->push($skill);
+            }
+        }
+
+        // Calculate overall statistics
+        $completedExams = $user->exams->where('pivot.status', 'closed');
+        $user->statistics = [
+            'total_enrolled_skills' => $enrolledSkills->count(),
+            'total_enrolled_exams' => $user->exams->count(),
+            'total_completed_exams' => $completedExams->count(),
+            'overall_average_score' => $completedExams->isNotEmpty()
+                ? round($completedExams->avg('pivot.score'), 2)
+                : null,
+            'total_time_spent' => $completedExams->sum('pivot.time_mins'),
+        ];
+
+        $user->setRelation('enrolledSkills', $enrolledSkills);
+
+        return UserProfileResource::make($user);
     }
 
     public function logout(Request $request)
