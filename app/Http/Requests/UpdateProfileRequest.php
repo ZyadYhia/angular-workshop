@@ -24,7 +24,9 @@ class UpdateProfileRequest extends FormRequest
     {
         return [
             'name' => ['sometimes', 'string', 'max:255'],
+            'username' => ['sometimes', 'string', 'max:255', Rule::unique('users')->ignore(auth()->id())],
             'email' => ['sometimes', 'string', 'email', 'max:255', Rule::unique('users')->ignore(auth()->id())],
+            'phone_number' => ['nullable', 'string', 'max:20'],
         ];
     }
 
@@ -37,8 +39,11 @@ class UpdateProfileRequest extends FormRequest
     {
         return [
             'name.max' => 'The name must not exceed 255 characters.',
+            'username.max' => 'The username must not exceed 255 characters.',
+            'username.unique' => 'This username is already taken.',
             'email.email' => 'Please provide a valid email address.',
             'email.unique' => 'This email is already registered.',
+            'phone_number.max' => 'The phone number must not exceed 20 characters.',
         ];
     }
 }
