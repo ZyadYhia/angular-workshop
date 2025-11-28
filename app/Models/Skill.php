@@ -4,8 +4,23 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
+use OpenApi\Attributes as OA;
 use Spatie\Translatable\HasTranslations;
 
+#[OA\Schema(
+    schema: 'Skill',
+    title: 'Skill',
+    description: 'Skill model',
+    required: ['id', 'name', 'cat_id'],
+    properties: [
+        new OA\Property(property: 'id', type: 'integer', example: 1),
+        new OA\Property(property: 'name', type: 'object', example: ['en' => 'Laravel', 'ar' => 'لارافيل']),
+        new OA\Property(property: 'cat_id', type: 'integer', example: 1),
+        new OA\Property(property: 'active', type: 'boolean', example: true),
+        new OA\Property(property: 'created_at', type: 'string', format: 'date-time'),
+        new OA\Property(property: 'updated_at', type: 'string', format: 'date-time'),
+    ]
+)]
 class Skill extends Model
 {
     use HasFactory, HasTranslations;

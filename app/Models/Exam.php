@@ -4,8 +4,27 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
+use OpenApi\Attributes as OA;
 use Spatie\Translatable\HasTranslations;
 
+#[OA\Schema(
+    schema: 'Exam',
+    title: 'Exam',
+    description: 'Exam model',
+    required: ['id', 'name', 'skill_id', 'time_mins', 'num_questions'],
+    properties: [
+        new OA\Property(property: 'id', type: 'integer', example: 1),
+        new OA\Property(property: 'name', type: 'object', example: ['en' => 'Laravel Basics', 'ar' => 'أساسيات لارافيل']),
+        new OA\Property(property: 'desc', type: 'object', example: ['en' => 'Test your Laravel knowledge', 'ar' => 'اختبر معرفتك بلارافيل']),
+        new OA\Property(property: 'skill_id', type: 'integer', example: 1),
+        new OA\Property(property: 'time_mins', type: 'integer', example: 60),
+        new OA\Property(property: 'num_questions', type: 'integer', example: 20),
+        new OA\Property(property: 'pass_mark', type: 'integer', example: 70),
+        new OA\Property(property: 'active', type: 'boolean', example: true),
+        new OA\Property(property: 'created_at', type: 'string', format: 'date-time'),
+        new OA\Property(property: 'updated_at', type: 'string', format: 'date-time'),
+    ]
+)]
 class Exam extends Model
 {
     use HasFactory, HasTranslations;

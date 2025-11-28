@@ -10,9 +10,26 @@ use App\Models\Exam;
 use Carbon\Carbon;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Validator;
+use OpenApi\Attributes as OA;
 
+#[OA\Tag(name: 'Exams', description: 'Exam management and taking endpoints')]
 class ExamController extends Controller
 {
+    #[OA\Get(
+        path: '/exams',
+        summary: 'Get all exams',
+        tags: ['Exams'],
+        responses: [
+            new OA\Response(
+                response: 200,
+                description: 'List of exams',
+                content: new OA\JsonContent(
+                    type: 'array',
+                    items: new OA\Items(ref: '#/components/schemas/Exam')
+                )
+            ),
+        ]
+    )]
     public function index()
     {
         $exams = Exam::orderBy('id', 'DESC')->get();
@@ -20,11 +37,66 @@ class ExamController extends Controller
         return ExamResource::collection($exams);
     }
 
+    #[OA\Get(
+        path: '/exams/{id}',
+        summary: 'Get a specific exam',
+        tags: ['Exams'],
+        parameters: [
+            new OA\Parameter(
+                name: 'id',
+                in: 'path',
+                required: true,
+                schema: new OA\Schema(type: 'integer')
+            ),
+        ],
+        responses: [
+            new OA\Response(
+                response: 200,
+                description: 'Exam details',
+                content: new OA\JsonContent(ref: '#/components/schemas/Exam')
+            ),
+            new OA\Response(response: 404, description: 'Exam not found'),
+        ]
+    )]
     public function show(Exam $exam)
     {
         return ExamResource::make($exam);
     }
 
+    #[OA\Post(
+        path: '/exams',
+        summary: 'Create a new exam',
+        security: [['bearerAuth' => []]],
+        tags: ['Exams'],
+        requestBody: new OA\RequestBody(
+            required: true,
+            content: new OA\JsonContent(
+                required: ['name_en', 'name_ar', 'desc_en', 'desc_ar', 'skill_id', 'questions_no', 'duration_mins', 'difficulty'],
+                properties: [
+                    new OA\Property(property: 'name_en', type: 'string', example: 'Laravel Basics'),
+                    new OA\Property(property: 'name_ar', type: 'string', example: 'أساسيات لارافيل'),
+                    new OA\Property(property: 'desc_en', type: 'string', example: 'Test your Laravel knowledge'),
+                    new OA\Property(property: 'desc_ar', type: 'string', example: 'اختبر معرفتك بلارافيل'),
+                    new OA\Property(property: 'skill_id', type: 'integer', example: 1),
+                    new OA\Property(property: 'questions_no', type: 'integer', example: 20),
+                    new OA\Property(property: 'duration_mins', type: 'integer', example: 60),
+                    new OA\Property(property: 'difficulty', type: 'string', example: 'medium'),
+                    new OA\Property(property: 'img', type: 'string', example: 'exam.png'),
+                    new OA\Property(property: 'active', type: 'boolean', example: true),
+                ]
+            )
+        ),
+        responses: [
+            new OA\Response(
+                response: 201,
+                description: 'Exam created successfully',
+                content: new OA\JsonContent(ref: '#/components/schemas/Exam')
+            ),
+            new OA\Response(response: 401, description: 'Unauthenticated'),
+            new OA\Response(response: 403, description: 'Forbidden'),
+            new OA\Response(response: 422, description: 'Validation error'),
+        ]
+    )]
     public function store(StoreExamRequest $request)
     {
         $exam = Exam::create([
@@ -47,6 +119,48 @@ class ExamController extends Controller
         return ExamResource::make($exam);
     }
 
+    #[OA\Put(
+        path: '/exams/{id}',
+        summary: 'Update an exam',
+        security: [['bearerAuth' => []]],
+        tags: ['Exams'],
+        parameters: [
+            new OA\Parameter(
+                name: 'id',
+                in: 'path',
+                required: true,
+                schema: new OA\Schema(type: 'integer')
+            ),
+        ],
+        requestBody: new OA\RequestBody(
+            required: true,
+            content: new OA\JsonContent(
+                properties: [
+                    new OA\Property(property: 'name_en', type: 'string', example: 'Laravel Basics'),
+                    new OA\Property(property: 'name_ar', type: 'string', example: 'أساسيات لارافيل'),
+                    new OA\Property(property: 'desc_en', type: 'string', example: 'Test your Laravel knowledge'),
+                    new OA\Property(property: 'desc_ar', type: 'string', example: 'اختبر معرفتك بلارافيل'),
+                    new OA\Property(property: 'skill_id', type: 'integer', example: 1),
+                    new OA\Property(property: 'questions_no', type: 'integer', example: 20),
+                    new OA\Property(property: 'duration_mins', type: 'integer', example: 60),
+                    new OA\Property(property: 'difficulty', type: 'string', example: 'medium'),
+                    new OA\Property(property: 'img', type: 'string', example: 'exam.png'),
+                    new OA\Property(property: 'active', type: 'boolean', example: true),
+                ]
+            )
+        ),
+        responses: [
+            new OA\Response(
+                response: 200,
+                description: 'Exam updated successfully',
+                content: new OA\JsonContent(ref: '#/components/schemas/Exam')
+            ),
+            new OA\Response(response: 401, description: 'Unauthenticated'),
+            new OA\Response(response: 403, description: 'Forbidden'),
+            new OA\Response(response: 404, description: 'Exam not found'),
+            new OA\Response(response: 422, description: 'Validation error'),
+        ]
+    )]
     public function update(UpdateExamRequest $request, Exam $exam)
     {
         $exam->update([
@@ -69,6 +183,34 @@ class ExamController extends Controller
         return ExamResource::make($exam);
     }
 
+    #[OA\Delete(
+        path: '/exams/{id}',
+        summary: 'Delete an exam',
+        security: [['bearerAuth' => []]],
+        tags: ['Exams'],
+        parameters: [
+            new OA\Parameter(
+                name: 'id',
+                in: 'path',
+                required: true,
+                schema: new OA\Schema(type: 'integer')
+            ),
+        ],
+        responses: [
+            new OA\Response(
+                response: 200,
+                description: 'Exam deleted successfully',
+                content: new OA\JsonContent(
+                    properties: [
+                        new OA\Property(property: 'message', type: 'string', example: 'Exam deleted successfully'),
+                    ]
+                )
+            ),
+            new OA\Response(response: 401, description: 'Unauthenticated'),
+            new OA\Response(response: 403, description: 'Forbidden'),
+            new OA\Response(response: 404, description: 'Exam not found'),
+        ]
+    )]
     public function destroy(Exam $exam)
     {
         $this->authorize('delete', $exam);
@@ -84,6 +226,30 @@ class ExamController extends Controller
         ]);
     }
 
+    #[OA\Get(
+        path: '/exams/show-questions/{id}',
+        summary: 'Get exam questions for taking',
+        security: [['bearerAuth' => []]],
+        tags: ['Exams'],
+        parameters: [
+            new OA\Parameter(
+                name: 'id',
+                in: 'path',
+                required: true,
+                schema: new OA\Schema(type: 'integer')
+            ),
+        ],
+        responses: [
+            new OA\Response(
+                response: 200,
+                description: 'Exam with questions',
+                content: new OA\JsonContent(ref: '#/components/schemas/Exam')
+            ),
+            new OA\Response(response: 401, description: 'Unauthenticated'),
+            new OA\Response(response: 403, description: 'Forbidden'),
+            new OA\Response(response: 404, description: 'Exam not found'),
+        ]
+    )]
     public function showQuestions($id)
     {
         $exam = Exam::with('questions')->findOrFail($id);
@@ -93,6 +259,35 @@ class ExamController extends Controller
         return ExamResource::make($exam);
     }
 
+    #[OA\Post(
+        path: '/exams/start/{id}',
+        summary: 'Start an exam',
+        security: [['bearerAuth' => []]],
+        tags: ['Exams'],
+        parameters: [
+            new OA\Parameter(
+                name: 'id',
+                in: 'path',
+                required: true,
+                schema: new OA\Schema(type: 'integer')
+            ),
+        ],
+        responses: [
+            new OA\Response(
+                response: 200,
+                description: 'Exam started successfully',
+                content: new OA\JsonContent(
+                    properties: [
+                        new OA\Property(property: 'message', type: 'string', example: 'exam begins'),
+                        new OA\Property(property: 'token', type: 'string'),
+                    ]
+                )
+            ),
+            new OA\Response(response: 401, description: 'Unauthenticated'),
+            new OA\Response(response: 403, description: 'Forbidden'),
+            new OA\Response(response: 404, description: 'Exam not found'),
+        ]
+    )]
     public function start($examId, Request $request)
     {
         $exam = Exam::findOrFail($examId);
@@ -114,6 +309,49 @@ class ExamController extends Controller
         ]);
     }
 
+    #[OA\Post(
+        path: '/exams/submit/{id}',
+        summary: 'Submit exam answers',
+        security: [['bearerAuth' => []]],
+        tags: ['Exams'],
+        parameters: [
+            new OA\Parameter(
+                name: 'id',
+                in: 'path',
+                required: true,
+                schema: new OA\Schema(type: 'integer')
+            ),
+        ],
+        requestBody: new OA\RequestBody(
+            required: true,
+            content: new OA\JsonContent(
+                required: ['answers'],
+                properties: [
+                    new OA\Property(
+                        property: 'answers',
+                        type: 'object',
+                        example: ['1' => 2, '2' => 1, '3' => 4]
+                    ),
+                ]
+            )
+        ),
+        responses: [
+            new OA\Response(
+                response: 200,
+                description: 'Exam submitted successfully',
+                content: new OA\JsonContent(
+                    properties: [
+                        new OA\Property(property: 'message', type: 'string', example: 'exam finished'),
+                        new OA\Property(property: 'score', type: 'number', format: 'float', example: 85.5),
+                    ]
+                )
+            ),
+            new OA\Response(response: 401, description: 'Unauthenticated'),
+            new OA\Response(response: 403, description: 'Forbidden'),
+            new OA\Response(response: 404, description: 'Exam not found'),
+            new OA\Response(response: 422, description: 'Validation error'),
+        ]
+    )]
     public function submit(Request $request, $examId)
     {
         $exam = Exam::findOrFail($examId);

@@ -8,9 +8,26 @@ use Illuminate\Database\Eloquent\Relations\BelongsToMany;
 use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
+use OpenApi\Attributes as OA;
 use Spatie\Permission\Traits\HasRoles;
 use Tymon\JWTAuth\Contracts\JWTSubject;
 
+#[OA\Schema(
+    schema: 'User',
+    title: 'User',
+    description: 'User model',
+    required: ['id', 'name', 'username', 'email'],
+    properties: [
+        new OA\Property(property: 'id', type: 'integer', example: 1),
+        new OA\Property(property: 'name', type: 'string', example: 'John Doe'),
+        new OA\Property(property: 'username', type: 'string', example: 'johndoe'),
+        new OA\Property(property: 'email', type: 'string', format: 'email', example: 'john@example.com'),
+        new OA\Property(property: 'phone_number', type: 'string', nullable: true, example: '+1234567890'),
+        new OA\Property(property: 'email_verified_at', type: 'string', format: 'date-time', nullable: true),
+        new OA\Property(property: 'created_at', type: 'string', format: 'date-time'),
+        new OA\Property(property: 'updated_at', type: 'string', format: 'date-time'),
+    ]
+)]
 class User extends Authenticatable implements JWTSubject
 {
     /** @use HasFactory<\Database\Factories\UserFactory> */
