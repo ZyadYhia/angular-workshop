@@ -1,9 +1,9 @@
 <?php
 
 use App\Http\Controllers\API\AuthController;
-use App\Http\Controllers\Api\CatController;
-use App\Http\Controllers\Api\CourseController;
-use App\Http\Controllers\Api\ExamController;
+use App\Http\Controllers\API\CatController;
+use App\Http\Controllers\API\CourseController;
+use App\Http\Controllers\API\ExamController;
 use Illuminate\Support\Facades\Route;
 
 Route::prefix('auth')->group(function () {
