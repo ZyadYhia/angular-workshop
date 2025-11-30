@@ -71,7 +71,7 @@ class AuthController extends Controller
         $user->assignRole(Role::Student->value);
 
         // Generate tokens
-        $token = auth()->login($user);
+        $token = auth('api')->login($user);
         $refreshToken = RefreshToken::generate(
             $user,
             $request->userAgent(),
@@ -116,13 +116,13 @@ class AuthController extends Controller
     {
         $credentials = $request->validated();
 
-        if (! $token = auth()->attempt($credentials)) {
+        if (! $token = auth('api')->attempt($credentials)) {
             return response()->json([
                 'message' => 'The provided credentials are incorrect',
             ], 422);
         }
 
-        $user = auth()->user();
+        $user = auth('api')->user();
         $refreshToken = RefreshToken::generate(
             $user,
             $request->userAgent(),
@@ -175,7 +175,7 @@ class AuthController extends Controller
         $user = $refreshToken->user;
 
         // Generate new access token
-        $token = auth()->login($user);
+        $token = auth('api')->login($user);
 
         // Revoke old refresh token and generate new one
         $refreshToken->revoke();
@@ -194,7 +194,7 @@ class AuthController extends Controller
             'access_token' => $accessToken,
             'refresh_token' => $refreshToken,
             'token_type' => 'bearer',
-            'expires_in' => auth()->factory()->getTTL() * 60,
+            'expires_in' => auth('api')->factory()->getTTL() * 60,
             'refresh_expires_in' => config('jwt.refresh_ttl') * 60,
         ]);
     }
@@ -215,7 +215,7 @@ class AuthController extends Controller
     )]
     public function me()
     {
-        $user = auth()->user();
+        $user = auth('api')->user();
 
         return response()->json(UserResource::make($user));
     }
@@ -253,7 +253,7 @@ class AuthController extends Controller
     )]
     public function profile()
     {
-        $user = auth()->user();
+        $user = auth('api')->user();
 
         // Load enrolled exams with pivot data
         $user->load(['exams' => function ($query) {
@@ -333,10 +333,10 @@ class AuthController extends Controller
     public function logout(Request $request)
     {
         // Revoke all refresh tokens for the user
-        $user = auth()->user();
+        $user = auth('api')->user();
         $user->refreshTokens()->whereNull('revoked_at')->update(['revoked_at' => now()]);
 
-        auth()->logout();
+        auth('api')->logout();
 
         return response()->json(['message' => 'Successfully logged out']);
     }
@@ -374,7 +374,7 @@ class AuthController extends Controller
     )]
     public function updateProfile(UpdateProfileRequest $request)
     {
-        $user = auth()->user();
+        $user = auth('api')->user();
         $validated = $request->validated();
 
         $user->update($validated);
@@ -417,7 +417,7 @@ class AuthController extends Controller
     )]
     public function updatePassword(UpdatePasswordRequest $request)
     {
-        $user = auth()->user();
+        $user = auth('api')->user();
         $validated = $request->validated();
 
         // Verify current password
