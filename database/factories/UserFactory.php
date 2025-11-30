@@ -17,6 +17,14 @@ class UserFactory extends Factory
     protected static ?string $password;
 
     /**
+     * Get Faker instance.
+     */
+    protected function faker(): \Faker\Generator
+    {
+        return $this->faker ?: \Faker\Factory::create('en_US');
+    }
+
+    /**
      * Define the model's default state.
      *
      * @return array<string, mixed>
@@ -24,10 +32,10 @@ class UserFactory extends Factory
     public function definition(): array
     {
         return [
-            'name' => fake()->name(),
-            'username' => fake()->unique()->userName(),
-            'email' => fake()->unique()->safeEmail(),
-            'phone_number' => fake()->phoneNumber(),
+            'name' => $this->faker()->name(),
+            'username' => $this->faker()->unique()->userName(),
+            'email' => $this->faker()->unique()->safeEmail(),
+            'phone_number' => $this->faker()->phoneNumber(),
             'email_verified_at' => now(),
             'password' => static::$password ??= Hash::make('password'),
             'remember_token' => Str::random(10),

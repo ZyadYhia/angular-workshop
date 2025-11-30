@@ -15,6 +15,14 @@ class ExamFactory extends Factory
     protected $model = Exam::class;
 
     /**
+     * Get Faker instance.
+     */
+    protected function faker(): \Faker\Generator
+    {
+        return $this->faker ?: \Faker\Factory::create('en_US');
+    }
+
+    /**
      * Define the model's default state.
      *
      * @return array
@@ -33,7 +41,7 @@ class ExamFactory extends Factory
             ['en' => 'Professional Techniques', 'ar' => 'التقنيات الاحترافية'],
         ];
 
-        $name = $this->faker->randomElement($examNames);
+        $name = $this->faker()->randomElement($examNames);
 
         return [
             'name' => [
@@ -46,8 +54,8 @@ class ExamFactory extends Factory
             ],
             'img' => "exams/$i.png",
             'questions_no' => 15,
-            'difficulty' => $this->faker->numberBetween(1, 5),
-            'duration_mins' => $this->faker->numberBetween(1, 3) * 30,
+            'difficulty' => $this->faker()->numberBetween(1, 5),
+            'duration_mins' => $this->faker()->numberBetween(1, 3) * 30,
             'active' => true,
         ];
     }

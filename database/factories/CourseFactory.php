@@ -15,6 +15,14 @@ class CourseFactory extends Factory
     protected $model = Course::class;
 
     /**
+     * Get Faker instance.
+     */
+    protected function faker(): \Faker\Generator
+    {
+        return $this->faker ?: \Faker\Factory::create('en_US');
+    }
+
+    /**
      * Define the model's default state.
      *
      * @return array
@@ -39,7 +47,7 @@ class CourseFactory extends Factory
             ['en' => 'Cybersecurity', 'ar' => 'الأمن السيبراني'],
         ];
 
-        $course = $this->faker->randomElement($courses);
+        $course = $this->faker()->randomElement($courses);
 
         return [
             'name' => [

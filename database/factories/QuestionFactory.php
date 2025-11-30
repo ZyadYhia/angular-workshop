@@ -15,6 +15,14 @@ class QuestionFactory extends Factory
     protected $model = Question::class;
 
     /**
+     * Get Faker instance.
+     */
+    protected function faker(): \Faker\Generator
+    {
+        return $this->faker ?: \Faker\Factory::create('en_US');
+    }
+
+    /**
      * Define the model's default state.
      *
      * @return array
@@ -51,7 +59,7 @@ class QuestionFactory extends Factory
             ],
         ];
 
-        $question = $this->faker->randomElement($questions);
+        $question = $this->faker()->randomElement($questions);
 
         return [
             'title' => $question['title'],
@@ -59,7 +67,7 @@ class QuestionFactory extends Factory
             'option_2' => $question['options'][1],
             'option_3' => $question['options'][2],
             'option_4' => $question['options'][3],
-            'right_ans' => $this->faker->numberBetween(1, 4),
+            'right_ans' => $this->faker()->numberBetween(1, 4),
         ];
     }
 }

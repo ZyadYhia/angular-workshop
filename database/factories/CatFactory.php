@@ -15,6 +15,14 @@ class CatFactory extends Factory
     protected $model = Cat::class;
 
     /**
+     * Get Faker instance.
+     */
+    protected function faker(): \Faker\Generator
+    {
+        return $this->faker ?: \Faker\Factory::create('en_US');
+    }
+
+    /**
      * Define the model's default state.
      *
      * @return array
@@ -34,7 +42,7 @@ class CatFactory extends Factory
             ['en' => 'Science', 'ar' => 'العلوم'],
         ];
 
-        $category = $this->faker->randomElement($categories);
+        $category = $this->faker()->randomElement($categories);
 
         return [
             'name' => [
