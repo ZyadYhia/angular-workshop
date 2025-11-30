@@ -36,7 +36,7 @@ class CatController extends Controller
 
     #[OA\Get(
         path: '/categories/{id}',
-        summary: 'Get a specific category with skills',
+        summary: 'Get a specific category with courses',
         tags: ['Categories'],
         parameters: [
             new OA\Parameter(
@@ -57,7 +57,7 @@ class CatController extends Controller
     )]
     public function show(Cat $category)
     {
-        $category->load('skills');
+        $category->load('courses');
 
         return CatResource::make($category);
     }
@@ -182,14 +182,14 @@ class CatController extends Controller
     {
         $this->authorize('delete', $category);
 
-        // Delete all associated skills and their exams
-        foreach ($category->skills as $skill) {
+        // Delete all associated courses and their exams
+        foreach ($category->courses as $course) {
             // Delete exams and their questions
-            foreach ($skill->exams as $exam) {
+            foreach ($course->exams as $exam) {
                 $exam->questions()->delete();
                 $exam->delete();
             }
-            $skill->delete();
+            $course->delete();
         }
 
         // Delete the category
