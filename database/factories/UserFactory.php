@@ -21,7 +21,15 @@ class UserFactory extends Factory
      */
     protected function faker(): \Faker\Generator
     {
-        return $this->faker ?: app(\Faker\Generator::class);
+        if ($this->faker) {
+            return $this->faker;
+        }
+
+        if (app()->bound(\Faker\Generator::class)) {
+            return app(\Faker\Generator::class);
+        }
+
+        return \Faker\Factory::create(config('app.faker_locale', 'en_US'));
     }
 
     /**
