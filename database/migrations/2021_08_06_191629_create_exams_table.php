@@ -22,7 +22,7 @@ class CreateExamsTable extends Migration
             $table->tinyInteger('difficulty');
             $table->smallInteger('duration_mins');
             $table->boolean('active')->default(true);
-            $table->foreignId('skill_id')->constrained();
+            $table->foreignId('course_id')->constrained('courses');
             $table->timestamps();
         });
     }

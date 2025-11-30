@@ -2,17 +2,17 @@
 
 namespace Database\Factories;
 
-use App\Models\Skill;
+use App\Models\Course;
 use Illuminate\Database\Eloquent\Factories\Factory;
 
-class SkillFactory extends Factory
+class CourseFactory extends Factory
 {
     /**
      * The name of the factory's corresponding model.
      *
      * @var string
      */
-    protected $model = Skill::class;
+    protected $model = Course::class;
 
     /**
      * Define the model's default state.
@@ -24,7 +24,7 @@ class SkillFactory extends Factory
         static $i = 0;
         $i++;
 
-        $skills = [
+        $courses = [
             ['en' => 'Web Development', 'ar' => 'تطوير الويب'],
             ['en' => 'Mobile Apps', 'ar' => 'تطبيقات الجوال'],
             ['en' => 'Graphic Design', 'ar' => 'التصميم الجرافيكي'],
@@ -39,14 +39,14 @@ class SkillFactory extends Factory
             ['en' => 'Cybersecurity', 'ar' => 'الأمن السيبراني'],
         ];
 
-        $skill = $this->faker->randomElement($skills);
+        $course = $this->faker->randomElement($courses);
 
         return [
             'name' => [
-                'en' => $skill['en'],
-                'ar' => $skill['ar'],
+                'en' => $course['en'],
+                'ar' => $course['ar'],
             ],
-            'img' => "skills/$i.png",
+            'img' => "courses/$i.png",
             'active' => true,
         ];
     }

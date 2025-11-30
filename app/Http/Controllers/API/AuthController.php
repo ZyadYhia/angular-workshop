@@ -11,8 +11,8 @@ use App\Http\Requests\UpdatePasswordRequest;
 use App\Http\Requests\UpdateProfileRequest;
 use App\Http\Resources\UserProfileResource;
 use App\Http\Resources\UserResource;
+use App\Models\Course;
 use App\Models\RefreshToken;
-use App\Models\Skill;
 use App\Models\User;
 use Illuminate\Http\Request;
 use OpenApi\Attributes as OA;
@@ -257,27 +257,27 @@ class AuthController extends Controller
 
         // Load enrolled exams with pivot data
         $user->load(['exams' => function ($query) {
-            $query->with('skill')->orderBy('exam_user.created_at', 'desc');
+            $query->with('course')->orderBy('exam_user.created_at', 'desc');
         }]);
 
-        // Get unique skills from enrolled exams
-        $enrolledSkills = collect();
-        $skillIds = $user->exams->pluck('skill_id')->unique();
+        // Get unique courses from enrolled exams
+        $enrolledCourses = collect();
+        $courseIds = $user->exams->pluck('course_id')->unique();
 
-        foreach ($skillIds as $skillId) {
-            $skill = Skill::with(['exams' => function ($query) use ($user) {
+        foreach ($courseIds as $courseId) {
+            $course = Course::with(['exams' => function ($query) use ($user) {
                 $query->whereHas('users', function ($q) use ($user) {
                     $q->where('users.id', $user->id);
                 });
-            }])->find($skillId);
+            }])->find($courseId);
 
-            if ($skill) {
-                // Get user's exams for this skill
-                $userExamsForSkill = $user->exams->where('skill_id', $skill->id);
-                $completedExams = $userExamsForSkill->where('pivot.status', 'closed');
+            if ($course) {
+                // Get user's exams for this course
+                $userExamsForCourse = $user->exams->where('course_id', $course->id);
+                $completedExams = $userExamsForCourse->where('pivot.status', 'closed');
 
-                $skill->statistics = [
-                    'total_exams' => $userExamsForSkill->count(),
+                $course->statistics = [
+                    'total_exams' => $userExamsForCourse->count(),
                     'completed_exams' => $completedExams->count(),
                     'average_score' => $completedExams->isNotEmpty()
                         ? round($completedExams->avg('pivot.score'), 2)
@@ -288,17 +288,17 @@ class AuthController extends Controller
                     'total_time_spent' => $completedExams->sum('pivot.time_mins'),
                 ];
 
-                // Manually set the exams for this skill with pivot data
-                $skill->setRelation('exams', $userExamsForSkill->values());
+                // Manually set the exams for this course with pivot data
+                $course->setRelation('exams', $userExamsForCourse->values());
 
-                $enrolledSkills->push($skill);
+                $enrolledCourses->push($course);
             }
         }
 
         // Calculate overall statistics
         $completedExams = $user->exams->where('pivot.status', 'closed');
         $user->statistics = [
-            'total_enrolled_skills' => $enrolledSkills->count(),
+            'total_enrolled_courses' => $enrolledCourses->count(),
             'total_enrolled_exams' => $user->exams->count(),
             'total_completed_exams' => $completedExams->count(),
             'overall_average_score' => $completedExams->isNotEmpty()
@@ -307,7 +307,7 @@ class AuthController extends Controller
             'total_time_spent' => $completedExams->sum('pivot.time_mins'),
         ];
 
-        $user->setRelation('enrolledSkills', $enrolledSkills);
+        $user->setRelation('enrolledCourses', $enrolledCourses);
 
         return UserProfileResource::make($user);
     }

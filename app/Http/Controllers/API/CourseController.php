@@ -3,41 +3,41 @@
 namespace App\Http\Controllers\Api;
 
 use App\Http\Controllers\Controller;
-use App\Http\Requests\StoreSkillRequest;
-use App\Http\Requests\UpdateSkillRequest;
-use App\Http\Resources\SkillResource;
-use App\Models\Skill;
+use App\Http\Requests\StoreCourseRequest;
+use App\Http\Requests\UpdateCourseRequest;
+use App\Http\Resources\CourseResource;
+use App\Models\Course;
 use OpenApi\Attributes as OA;
 
-#[OA\Tag(name: 'Skills', description: 'Skill management endpoints')]
-class SkillController extends Controller
+#[OA\Tag(name: 'Courses', description: 'Course management endpoints')]
+class CourseController extends Controller
 {
     #[OA\Get(
-        path: '/skills',
-        summary: 'Get all skills',
-        tags: ['Skills'],
+        path: '/courses',
+        summary: 'Get all courses',
+        tags: ['Courses'],
         responses: [
             new OA\Response(
                 response: 200,
-                description: 'List of skills',
+                description: 'List of courses',
                 content: new OA\JsonContent(
                     type: 'array',
-                    items: new OA\Items(ref: '#/components/schemas/Skill')
+                    items: new OA\Items(ref: '#/components/schemas/Course')
                 )
             ),
         ]
     )]
     public function index()
     {
-        $skills = Skill::orderBy('id', 'DESC')->get();
+        $courses = Course::orderBy('id', 'DESC')->get();
 
-        return SkillResource::collection($skills);
+        return CourseResource::collection($courses);
     }
 
     #[OA\Get(
-        path: '/skills/{id}',
-        summary: 'Get a specific skill with exams',
-        tags: ['Skills'],
+        path: '/courses/{id}',
+        summary: 'Get a specific course with exams',
+        tags: ['Courses'],
         parameters: [
             new OA\Parameter(
                 name: 'id',
@@ -49,24 +49,24 @@ class SkillController extends Controller
         responses: [
             new OA\Response(
                 response: 200,
-                description: 'Skill details',
-                content: new OA\JsonContent(ref: '#/components/schemas/Skill')
+                description: 'Course details',
+                content: new OA\JsonContent(ref: '#/components/schemas/Course')
             ),
-            new OA\Response(response: 404, description: 'Skill not found'),
+            new OA\Response(response: 404, description: 'Course not found'),
         ]
     )]
-    public function show(Skill $skill)
+    public function show(Course $course)
     {
-        $skill->load('exams');
+        $course->load('exams');
 
-        return SkillResource::make($skill);
+        return CourseResource::make($course);
     }
 
     #[OA\Post(
-        path: '/skills',
-        summary: 'Create a new skill',
+        path: '/courses',
+        summary: 'Create a new course',
         security: [['bearerAuth' => []]],
-        tags: ['Skills'],
+        tags: ['Courses'],
         requestBody: new OA\RequestBody(
             required: true,
             content: new OA\JsonContent(
@@ -83,17 +83,17 @@ class SkillController extends Controller
         responses: [
             new OA\Response(
                 response: 201,
-                description: 'Skill created successfully',
-                content: new OA\JsonContent(ref: '#/components/schemas/Skill')
+                description: 'Course created successfully',
+                content: new OA\JsonContent(ref: '#/components/schemas/Course')
             ),
             new OA\Response(response: 401, description: 'Unauthenticated'),
             new OA\Response(response: 403, description: 'Forbidden'),
             new OA\Response(response: 422, description: 'Validation error'),
         ]
     )]
-    public function store(StoreSkillRequest $request)
+    public function store(StoreCourseRequest $request)
     {
-        $skill = Skill::create([
+        $course = Course::create([
             'name' => [
                 'en' => $request->name_en,
                 'ar' => $request->name_ar,
@@ -103,14 +103,14 @@ class SkillController extends Controller
             'active' => $request->input('active', true),
         ]);
 
-        return SkillResource::make($skill);
+        return CourseResource::make($course);
     }
 
     #[OA\Put(
-        path: '/skills/{id}',
-        summary: 'Update a skill',
+        path: '/courses/{id}',
+        summary: 'Update a course',
         security: [['bearerAuth' => []]],
-        tags: ['Skills'],
+        tags: ['Courses'],
         parameters: [
             new OA\Parameter(
                 name: 'id',
@@ -134,35 +134,35 @@ class SkillController extends Controller
         responses: [
             new OA\Response(
                 response: 200,
-                description: 'Skill updated successfully',
-                content: new OA\JsonContent(ref: '#/components/schemas/Skill')
+                description: 'Course updated successfully',
+                content: new OA\JsonContent(ref: '#/components/schemas/Course')
             ),
             new OA\Response(response: 401, description: 'Unauthenticated'),
             new OA\Response(response: 403, description: 'Forbidden'),
-            new OA\Response(response: 404, description: 'Skill not found'),
+            new OA\Response(response: 404, description: 'Course not found'),
             new OA\Response(response: 422, description: 'Validation error'),
         ]
     )]
-    public function update(UpdateSkillRequest $request, Skill $skill)
+    public function update(UpdateCourseRequest $request, Course $course)
     {
-        $skill->update([
+        $course->update([
             'name' => [
-                'en' => $request->input('name_en', $skill->getTranslation('name', 'en')),
-                'ar' => $request->input('name_ar', $skill->getTranslation('name', 'ar')),
+                'en' => $request->input('name_en', $course->getTranslation('name', 'en')),
+                'ar' => $request->input('name_ar', $course->getTranslation('name', 'ar')),
             ],
-            'img' => $request->input('img', $skill->img),
-            'cat_id' => $request->input('cat_id', $skill->cat_id),
-            'active' => $request->input('active', $skill->active),
+            'img' => $request->input('img', $course->img),
+            'cat_id' => $request->input('cat_id', $course->cat_id),
+            'active' => $request->input('active', $course->active),
         ]);
 
-        return SkillResource::make($skill);
+        return CourseResource::make($course);
     }
 
     #[OA\Delete(
-        path: '/skills/{id}',
-        summary: 'Delete a skill',
+        path: '/courses/{id}',
+        summary: 'Delete a course',
         security: [['bearerAuth' => []]],
-        tags: ['Skills'],
+        tags: ['Courses'],
         parameters: [
             new OA\Parameter(
                 name: 'id',
@@ -174,33 +174,33 @@ class SkillController extends Controller
         responses: [
             new OA\Response(
                 response: 200,
-                description: 'Skill deleted successfully',
+                description: 'Course deleted successfully',
                 content: new OA\JsonContent(
                     properties: [
-                        new OA\Property(property: 'message', type: 'string', example: 'Skill deleted successfully'),
+                        new OA\Property(property: 'message', type: 'string', example: 'Course deleted successfully'),
                     ]
                 )
             ),
             new OA\Response(response: 401, description: 'Unauthenticated'),
             new OA\Response(response: 403, description: 'Forbidden'),
-            new OA\Response(response: 404, description: 'Skill not found'),
+            new OA\Response(response: 404, description: 'Course not found'),
         ]
     )]
-    public function destroy(Skill $skill)
+    public function destroy(Course $course)
     {
-        $this->authorize('delete', $skill);
+        $this->authorize('delete', $course);
 
         // Delete all associated exams and their questions
-        foreach ($skill->exams as $exam) {
+        foreach ($course->exams as $exam) {
             $exam->questions()->delete();
             $exam->delete();
         }
 
-        // Delete the skill
-        $skill->delete();
+        // Delete the course
+        $course->delete();
 
         return response()->json([
-            'message' => 'Skill deleted successfully',
+            'message' => 'Course deleted successfully',
         ]);
     }
 }

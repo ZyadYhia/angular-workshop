@@ -2,8 +2,8 @@
 
 use App\Http\Controllers\API\AuthController;
 use App\Http\Controllers\Api\CatController;
+use App\Http\Controllers\Api\CourseController;
 use App\Http\Controllers\Api\ExamController;
-use App\Http\Controllers\Api\SkillController;
 use Illuminate\Support\Facades\Route;
 
 Route::prefix('auth')->group(function () {
@@ -21,7 +21,7 @@ Route::prefix('auth')->group(function () {
 
 // Public routes - anyone can view
 Route::apiResource('categories', CatController::class)->only(['index', 'show']);
-Route::apiResource('skills', SkillController::class)->only(['index', 'show']);
+Route::apiResource('courses', CourseController::class)->only(['index', 'show']);
 Route::apiResource('exams', ExamController::class)->only(['index', 'show']);
 
 // Protected routes - require authentication and permissions
@@ -29,8 +29,8 @@ Route::middleware('auth:api')->group(function () {
     // Category management - requires ManageCategories permission
     Route::apiResource('categories', CatController::class)->only(['store', 'update', 'destroy']);
 
-    // Skill management - requires ManageCategories permission
-    Route::apiResource('skills', SkillController::class)->only(['store', 'update', 'destroy']);
+    // Course management - requires ManageCategories permission
+    Route::apiResource('courses', CourseController::class)->only(['store', 'update', 'destroy']);
 
     // Exam management - requires appropriate exam permissions
     Route::apiResource('exams', ExamController::class)->only(['store', 'update', 'destroy']);

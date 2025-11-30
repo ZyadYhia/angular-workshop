@@ -32,7 +32,7 @@ class UpdateExamRequest extends FormRequest
             'questions_no' => ['sometimes', 'integer', 'min:1', 'max:127'],
             'difficulty' => ['sometimes', 'integer', 'min:1', 'max:127'],
             'duration_mins' => ['sometimes', 'integer', 'min:1', 'max:32767'],
-            'skill_id' => ['sometimes', 'integer', 'exists:skills,id'],
+            'course_id' => ['sometimes', 'integer', 'exists:courses,id'],
             'active' => ['sometimes', 'boolean'],
         ];
     }
@@ -51,7 +51,7 @@ class UpdateExamRequest extends FormRequest
             'questions_no.integer' => 'The number of questions must be an integer.',
             'difficulty.integer' => 'The difficulty must be an integer.',
             'duration_mins.integer' => 'The duration must be an integer.',
-            'skill_id.exists' => 'The selected skill does not exist.',
+            'course_id.exists' => 'The selected course does not exist.',
             'active.boolean' => 'The active field must be true or false.',
         ];
     }

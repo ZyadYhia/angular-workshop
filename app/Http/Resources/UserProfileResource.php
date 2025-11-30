@@ -15,7 +15,7 @@ class UserProfileResource extends JsonResource
     public function toArray(Request $request): array
     {
         return [
-            'enrolled_skills' => EnrolledSkillResource::collection($this->whenLoaded('enrolledSkills')),
+            'enrolled_courses' => EnrolledCourseResource::collection($this->whenLoaded('enrolledCourses')),
             'enrolled_exams' => EnrolledExamResource::collection($this->whenLoaded('exams')),
             'statistics' => $this->when(isset($this->statistics), function () {
                 return $this->statistics;

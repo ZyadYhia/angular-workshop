@@ -4,16 +4,16 @@ namespace App\Http\Requests;
 
 use Illuminate\Foundation\Http\FormRequest;
 
-class UpdateSkillRequest extends FormRequest
+class UpdateCourseRequest extends FormRequest
 {
     /**
      * Determine if the user is authorized to make this request.
      */
     public function authorize(): bool
     {
-        $skill = $this->route('skill');
+        $course = $this->route('course');
 
-        return $this->user()->can('update', $skill);
+        return $this->user()->can('update', $course);
     }
 
     /**

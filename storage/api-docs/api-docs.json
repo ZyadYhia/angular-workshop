@@ -733,6 +733,261 @@
                 ]
             }
         },
+        "/courses": {
+            "get": {
+                "tags": [
+                    "Courses"
+                ],
+                "summary": "Get all courses",
+                "operationId": "75403048c36d79fe464ce4716c204c61",
+                "responses": {
+                    "200": {
+                        "description": "List of courses",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "type": "array",
+                                    "items": {
+                                        "$ref": "#/components/schemas/Course"
+                                    }
+                                }
+                            }
+                        }
+                    }
+                }
+            },
+            "post": {
+                "tags": [
+                    "Courses"
+                ],
+                "summary": "Create a new course",
+                "operationId": "56ff5a96b473881afe594ca81aeb754b",
+                "requestBody": {
+                    "required": true,
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "required": [
+                                    "name_en",
+                                    "name_ar",
+                                    "cat_id"
+                                ],
+                                "properties": {
+                                    "name_en": {
+                                        "type": "string",
+                                        "example": "Laravel"
+                                    },
+                                    "name_ar": {
+                                        "type": "string",
+                                        "example": "لارافيل"
+                                    },
+                                    "cat_id": {
+                                        "type": "integer",
+                                        "example": 1
+                                    },
+                                    "img": {
+                                        "type": "string",
+                                        "example": "laravel.png"
+                                    },
+                                    "active": {
+                                        "type": "boolean",
+                                        "example": true
+                                    }
+                                },
+                                "type": "object"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "201": {
+                        "description": "Course created successfully",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/Course"
+                                }
+                            }
+                        }
+                    },
+                    "401": {
+                        "description": "Unauthenticated"
+                    },
+                    "403": {
+                        "description": "Forbidden"
+                    },
+                    "422": {
+                        "description": "Validation error"
+                    }
+                },
+                "security": [
+                    {
+                        "bearerAuth": []
+                    }
+                ]
+            }
+        },
+        "/courses/{id}": {
+            "get": {
+                "tags": [
+                    "Courses"
+                ],
+                "summary": "Get a specific course with exams",
+                "operationId": "703f82b2a4cf2b6bec94909bbbc1ea7a",
+                "parameters": [
+                    {
+                        "name": "id",
+                        "in": "path",
+                        "required": true,
+                        "schema": {
+                            "type": "integer"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Course details",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/Course"
+                                }
+                            }
+                        }
+                    },
+                    "404": {
+                        "description": "Course not found"
+                    }
+                }
+            },
+            "put": {
+                "tags": [
+                    "Courses"
+                ],
+                "summary": "Update a course",
+                "operationId": "3a7361097bd69b58c4a6d2bf4bdd283f",
+                "parameters": [
+                    {
+                        "name": "id",
+                        "in": "path",
+                        "required": true,
+                        "schema": {
+                            "type": "integer"
+                        }
+                    }
+                ],
+                "requestBody": {
+                    "required": true,
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "properties": {
+                                    "name_en": {
+                                        "type": "string",
+                                        "example": "Laravel"
+                                    },
+                                    "name_ar": {
+                                        "type": "string",
+                                        "example": "لارافيل"
+                                    },
+                                    "cat_id": {
+                                        "type": "integer",
+                                        "example": 1
+                                    },
+                                    "img": {
+                                        "type": "string",
+                                        "example": "laravel.png"
+                                    },
+                                    "active": {
+                                        "type": "boolean",
+                                        "example": true
+                                    }
+                                },
+                                "type": "object"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "200": {
+                        "description": "Course updated successfully",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/Course"
+                                }
+                            }
+                        }
+                    },
+                    "401": {
+                        "description": "Unauthenticated"
+                    },
+                    "403": {
+                        "description": "Forbidden"
+                    },
+                    "404": {
+                        "description": "Course not found"
+                    },
+                    "422": {
+                        "description": "Validation error"
+                    }
+                },
+                "security": [
+                    {
+                        "bearerAuth": []
+                    }
+                ]
+            },
+            "delete": {
+                "tags": [
+                    "Courses"
+                ],
+                "summary": "Delete a course",
+                "operationId": "46eece04198b0ea6faa7697bffa4f469",
+                "parameters": [
+                    {
+                        "name": "id",
+                        "in": "path",
+                        "required": true,
+                        "schema": {
+                            "type": "integer"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Course deleted successfully",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "message": {
+                                            "type": "string",
+                                            "example": "Course deleted successfully"
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    },
+                    "401": {
+                        "description": "Unauthenticated"
+                    },
+                    "403": {
+                        "description": "Forbidden"
+                    },
+                    "404": {
+                        "description": "Course not found"
+                    }
+                },
+                "security": [
+                    {
+                        "bearerAuth": []
+                    }
+                ]
+            }
+        },
         "/exams": {
             "get": {
                 "tags": [
@@ -772,7 +1027,7 @@
                                     "name_ar",
                                     "desc_en",
                                     "desc_ar",
-                                    "skill_id",
+                                    "course_id",
                                     "questions_no",
                                     "duration_mins",
                                     "difficulty"
@@ -794,7 +1049,7 @@
                                         "type": "string",
                                         "example": "اختبر معرفتك بلارافيل"
                                     },
-                                    "skill_id": {
+                                    "course_id": {
                                         "type": "integer",
                                         "example": 1
                                     },
@@ -923,7 +1178,7 @@
                                         "type": "string",
                                         "example": "اختبر معرفتك بلارافيل"
                                     },
-                                    "skill_id": {
+                                    "course_id": {
                                         "type": "integer",
                                         "example": 1
                                     },
@@ -1213,261 +1468,6 @@
                     }
                 ]
             }
-        },
-        "/skills": {
-            "get": {
-                "tags": [
-                    "Skills"
-                ],
-                "summary": "Get all skills",
-                "operationId": "abc589672de509c5e1ae0eb9f43d7f65",
-                "responses": {
-                    "200": {
-                        "description": "List of skills",
-                        "content": {
-                            "application/json": {
-                                "schema": {
-                                    "type": "array",
-                                    "items": {
-                                        "$ref": "#/components/schemas/Skill"
-                                    }
-                                }
-                            }
-                        }
-                    }
-                }
-            },
-            "post": {
-                "tags": [
-                    "Skills"
-                ],
-                "summary": "Create a new skill",
-                "operationId": "0d51b818cd83d1f12dcc8a56345c3dbe",
-                "requestBody": {
-                    "required": true,
-                    "content": {
-                        "application/json": {
-                            "schema": {
-                                "required": [
-                                    "name_en",
-                                    "name_ar",
-                                    "cat_id"
-                                ],
-                                "properties": {
-                                    "name_en": {
-                                        "type": "string",
-                                        "example": "Laravel"
-                                    },
-                                    "name_ar": {
-                                        "type": "string",
-                                        "example": "لارافيل"
-                                    },
-                                    "cat_id": {
-                                        "type": "integer",
-                                        "example": 1
-                                    },
-                                    "img": {
-                                        "type": "string",
-                                        "example": "laravel.png"
-                                    },
-                                    "active": {
-                                        "type": "boolean",
-                                        "example": true
-                                    }
-                                },
-                                "type": "object"
-                            }
-                        }
-                    }
-                },
-                "responses": {
-                    "201": {
-                        "description": "Skill created successfully",
-                        "content": {
-                            "application/json": {
-                                "schema": {
-                                    "$ref": "#/components/schemas/Skill"
-                                }
-                            }
-                        }
-                    },
-                    "401": {
-                        "description": "Unauthenticated"
-                    },
-                    "403": {
-                        "description": "Forbidden"
-                    },
-                    "422": {
-                        "description": "Validation error"
-                    }
-                },
-                "security": [
-                    {
-                        "bearerAuth": []
-                    }
-                ]
-            }
-        },
-        "/skills/{id}": {
-            "get": {
-                "tags": [
-                    "Skills"
-                ],
-                "summary": "Get a specific skill with exams",
-                "operationId": "f9d72df8282e1223cebfcfe15ab06c65",
-                "parameters": [
-                    {
-                        "name": "id",
-                        "in": "path",
-                        "required": true,
-                        "schema": {
-                            "type": "integer"
-                        }
-                    }
-                ],
-                "responses": {
-                    "200": {
-                        "description": "Skill details",
-                        "content": {
-                            "application/json": {
-                                "schema": {
-                                    "$ref": "#/components/schemas/Skill"
-                                }
-                            }
-                        }
-                    },
-                    "404": {
-                        "description": "Skill not found"
-                    }
-                }
-            },
-            "put": {
-                "tags": [
-                    "Skills"
-                ],
-                "summary": "Update a skill",
-                "operationId": "606b380c07b19fdbe3c65b395a5dbbb1",
-                "parameters": [
-                    {
-                        "name": "id",
-                        "in": "path",
-                        "required": true,
-                        "schema": {
-                            "type": "integer"
-                        }
-                    }
-                ],
-                "requestBody": {
-                    "required": true,
-                    "content": {
-                        "application/json": {
-                            "schema": {
-                                "properties": {
-                                    "name_en": {
-                                        "type": "string",
-                                        "example": "Laravel"
-                                    },
-                                    "name_ar": {
-                                        "type": "string",
-                                        "example": "لارافيل"
-                                    },
-                                    "cat_id": {
-                                        "type": "integer",
-                                        "example": 1
-                                    },
-                                    "img": {
-                                        "type": "string",
-                                        "example": "laravel.png"
-                                    },
-                                    "active": {
-                                        "type": "boolean",
-                                        "example": true
-                                    }
-                                },
-                                "type": "object"
-                            }
-                        }
-                    }
-                },
-                "responses": {
-                    "200": {
-                        "description": "Skill updated successfully",
-                        "content": {
-                            "application/json": {
-                                "schema": {
-                                    "$ref": "#/components/schemas/Skill"
-                                }
-                            }
-                        }
-                    },
-                    "401": {
-                        "description": "Unauthenticated"
-                    },
-                    "403": {
-                        "description": "Forbidden"
-                    },
-                    "404": {
-                        "description": "Skill not found"
-                    },
-                    "422": {
-                        "description": "Validation error"
-                    }
-                },
-                "security": [
-                    {
-                        "bearerAuth": []
-                    }
-                ]
-            },
-            "delete": {
-                "tags": [
-                    "Skills"
-                ],
-                "summary": "Delete a skill",
-                "operationId": "87b15955e71b8374d6e9509081c24620",
-                "parameters": [
-                    {
-                        "name": "id",
-                        "in": "path",
-                        "required": true,
-                        "schema": {
-                            "type": "integer"
-                        }
-                    }
-                ],
-                "responses": {
-                    "200": {
-                        "description": "Skill deleted successfully",
-                        "content": {
-                            "application/json": {
-                                "schema": {
-                                    "properties": {
-                                        "message": {
-                                            "type": "string",
-                                            "example": "Skill deleted successfully"
-                                        }
-                                    },
-                                    "type": "object"
-                                }
-                            }
-                        }
-                    },
-                    "401": {
-                        "description": "Unauthenticated"
-                    },
-                    "403": {
-                        "description": "Forbidden"
-                    },
-                    "404": {
-                        "description": "Skill not found"
-                    }
-                },
-                "security": [
-                    {
-                        "bearerAuth": []
-                    }
-                ]
-            }
         }
     },
     "components": {
@@ -1490,6 +1490,45 @@
                             "en": "Programming",
                             "ar": "البرمجة"
                         }
+                    },
+                    "active": {
+                        "type": "boolean",
+                        "example": true
+                    },
+                    "created_at": {
+                        "type": "string",
+                        "format": "date-time"
+                    },
+                    "updated_at": {
+                        "type": "string",
+                        "format": "date-time"
+                    }
+                },
+                "type": "object"
+            },
+            "Course": {
+                "title": "Course",
+                "description": "Course model",
+                "required": [
+                    "id",
+                    "name",
+                    "cat_id"
+                ],
+                "properties": {
+                    "id": {
+                        "type": "integer",
+                        "example": 1
+                    },
+                    "name": {
+                        "type": "object",
+                        "example": {
+                            "en": "Laravel",
+                            "ar": "لارافيل"
+                        }
+                    },
+                    "cat_id": {
+                        "type": "integer",
+                        "example": 1
                     },
                     "active": {
                         "type": "boolean",
@@ -1535,7 +1574,7 @@
                             "ar": "اختبر معرفتك بلارافيل"
                         }
                     },
-                    "skill_id": {
+                    "course_id": {
                         "type": "integer",
                         "example": 1
                     },
@@ -1634,45 +1673,6 @@
                 },
                 "type": "object"
             },
-            "Skill": {
-                "title": "Skill",
-                "description": "Skill model",
-                "required": [
-                    "id",
-                    "name",
-                    "cat_id"
-                ],
-                "properties": {
-                    "id": {
-                        "type": "integer",
-                        "example": 1
-                    },
-                    "name": {
-                        "type": "object",
-                        "example": {
-                            "en": "Laravel",
-                            "ar": "لارافيل"
-                        }
-                    },
-                    "cat_id": {
-                        "type": "integer",
-                        "example": 1
-                    },
-                    "active": {
-                        "type": "boolean",
-                        "example": true
-                    },
-                    "created_at": {
-                        "type": "string",
-                        "format": "date-time"
-                    },
-                    "updated_at": {
-                        "type": "string",
-                        "format": "date-time"
-                    }
-                },
-                "type": "object"
-            },
             "User": {
                 "title": "User",
                 "description": "User model",
@@ -1741,12 +1741,12 @@
             "description": "Category management endpoints"
         },
         {
-            "name": "Exams",
-            "description": "Exam management and taking endpoints"
+            "name": "Courses",
+            "description": "Course management endpoints"
         },
         {
-            "name": "Skills",
-            "description": "Skill management endpoints"
+            "name": "Exams",
+            "description": "Exam management and taking endpoints"
         }
     ],
     "security": [

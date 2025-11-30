@@ -16,7 +16,7 @@ use Spatie\Translatable\HasTranslations;
         new OA\Property(property: 'id', type: 'integer', example: 1),
         new OA\Property(property: 'name', type: 'object', example: ['en' => 'Laravel Basics', 'ar' => 'أساسيات لارافيل']),
         new OA\Property(property: 'desc', type: 'object', example: ['en' => 'Test your Laravel knowledge', 'ar' => 'اختبر معرفتك بلارافيل']),
-        new OA\Property(property: 'skill_id', type: 'integer', example: 1),
+        new OA\Property(property: 'course_id', type: 'integer', example: 1),
         new OA\Property(property: 'time_mins', type: 'integer', example: 60),
         new OA\Property(property: 'num_questions', type: 'integer', example: 20),
         new OA\Property(property: 'pass_mark', type: 'integer', example: 70),
@@ -33,9 +33,9 @@ class Exam extends Model
 
     public array $translatable = ['name', 'desc'];
 
-    public function skill()
+    public function course()
     {
-        return $this->belongsTo(Skill::class);
+        return $this->belongsTo(Course::class);
     }
 
     public function questions()

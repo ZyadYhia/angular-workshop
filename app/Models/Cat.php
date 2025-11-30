@@ -28,9 +28,9 @@ class Cat extends Model
 
     public array $translatable = ['name'];
 
-    public function skills()
+    public function courses()
     {
-        return $this->hasMany(Skill::class);
+        return $this->hasMany(Course::class);
     }
 
     public function scopeActive($query)

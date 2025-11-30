@@ -5,7 +5,7 @@ namespace Database\Seeders;
 use App\Models\Cat;
 use App\Models\Exam;
 use App\Models\Question;
-use App\Models\Skill;
+use App\Models\Course;
 use Illuminate\Database\Seeder;
 
 class CatSeeder extends Seeder
@@ -18,7 +18,7 @@ class CatSeeder extends Seeder
     public function run()
     {
         Cat::factory()->has(
-            Skill::factory()->has(
+            Course::factory()->has(
                 Exam::factory()->has(
                     Question::factory()->count(15)
                 )->count(2)

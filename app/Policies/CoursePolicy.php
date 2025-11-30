@@ -3,10 +3,10 @@
 namespace App\Policies;
 
 use App\Enums\Permission;
-use App\Models\Skill;
+use App\Models\Course;
 use App\Models\User;
 
-class SkillPolicy
+class CoursePolicy
 {
     /**
      * Determine whether the user can view any models.
@@ -19,7 +19,7 @@ class SkillPolicy
     /**
      * Determine whether the user can view the model.
      */
-    public function view(?User $user, Skill $skill): bool
+    public function view(?User $user, Course $course): bool
     {
         return true;
     }
@@ -35,7 +35,7 @@ class SkillPolicy
     /**
      * Determine whether the user can update the model.
      */
-    public function update(User $user, Skill $skill): bool
+    public function update(User $user, Course $course): bool
     {
         return $user->can(Permission::ManageCategories->value);
     }
@@ -43,7 +43,7 @@ class SkillPolicy
     /**
      * Determine whether the user can delete the model.
      */
-    public function delete(User $user, Skill $skill): bool
+    public function delete(User $user, Course $course): bool
     {
         return $user->can(Permission::ManageCategories->value);
     }

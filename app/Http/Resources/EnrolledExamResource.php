@@ -29,7 +29,7 @@ class EnrolledExamResource extends JsonResource
             'difficulty' => $this->difficulty,
             'duration_mins' => $this->duration_mins,
             'active' => $this->active,
-            'skill_id' => $this->skill_id,
+            'course_id' => $this->course_id,
             'enrollment' => [
                 'score' => $this->pivot->score,
                 'time_mins' => $this->pivot->time_mins,

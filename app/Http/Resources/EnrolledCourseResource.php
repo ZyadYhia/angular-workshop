@@ -5,7 +5,7 @@ namespace App\Http\Resources;
 use Illuminate\Http\Request;
 use Illuminate\Http\Resources\Json\JsonResource;
 
-class SkillResource extends JsonResource
+class EnrolledCourseResource extends JsonResource
 {
     /**
      * Transform the resource into an array.
@@ -22,7 +22,11 @@ class SkillResource extends JsonResource
             ],
             'image' => $this->img ? asset("storage/uploads/{$this->img}") : null,
             'active' => $this->active,
-            'exams' => ExamResource::collection($this->whenLoaded('exams')),
+            'cat_id' => $this->cat_id,
+            'exams' => EnrolledExamResource::collection($this->whenLoaded('exams')),
+            'statistics' => $this->when(isset($this->statistics), function () {
+                return $this->statistics;
+            }),
         ];
     }
 }

@@ -8,9 +8,9 @@ use OpenApi\Attributes as OA;
 use Spatie\Translatable\HasTranslations;
 
 #[OA\Schema(
-    schema: 'Skill',
-    title: 'Skill',
-    description: 'Skill model',
+    schema: 'Course',
+    title: 'Course',
+    description: 'Course model',
     required: ['id', 'name', 'cat_id'],
     properties: [
         new OA\Property(property: 'id', type: 'integer', example: 1),
@@ -21,7 +21,7 @@ use Spatie\Translatable\HasTranslations;
         new OA\Property(property: 'updated_at', type: 'string', format: 'date-time'),
     ]
 )]
-class Skill extends Model
+class Course extends Model
 {
     use HasFactory, HasTranslations;
 

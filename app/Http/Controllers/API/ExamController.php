@@ -71,13 +71,13 @@ class ExamController extends Controller
         requestBody: new OA\RequestBody(
             required: true,
             content: new OA\JsonContent(
-                required: ['name_en', 'name_ar', 'desc_en', 'desc_ar', 'skill_id', 'questions_no', 'duration_mins', 'difficulty'],
+                required: ['name_en', 'name_ar', 'desc_en', 'desc_ar', 'course_id', 'questions_no', 'duration_mins', 'difficulty'],
                 properties: [
                     new OA\Property(property: 'name_en', type: 'string', example: 'Laravel Basics'),
                     new OA\Property(property: 'name_ar', type: 'string', example: 'أساسيات لارافيل'),
                     new OA\Property(property: 'desc_en', type: 'string', example: 'Test your Laravel knowledge'),
                     new OA\Property(property: 'desc_ar', type: 'string', example: 'اختبر معرفتك بلارافيل'),
-                    new OA\Property(property: 'skill_id', type: 'integer', example: 1),
+                    new OA\Property(property: 'course_id', type: 'integer', example: 1),
                     new OA\Property(property: 'questions_no', type: 'integer', example: 20),
                     new OA\Property(property: 'duration_mins', type: 'integer', example: 60),
                     new OA\Property(property: 'difficulty', type: 'string', example: 'medium'),
@@ -112,7 +112,7 @@ class ExamController extends Controller
             'questions_no' => $request->questions_no,
             'difficulty' => $request->difficulty,
             'duration_mins' => $request->duration_mins,
-            'skill_id' => $request->skill_id,
+            'course_id' => $request->course_id,
             'active' => $request->input('active', true),
         ]);
 
@@ -140,7 +140,7 @@ class ExamController extends Controller
                     new OA\Property(property: 'name_ar', type: 'string', example: 'أساسيات لارافيل'),
                     new OA\Property(property: 'desc_en', type: 'string', example: 'Test your Laravel knowledge'),
                     new OA\Property(property: 'desc_ar', type: 'string', example: 'اختبر معرفتك بلارافيل'),
-                    new OA\Property(property: 'skill_id', type: 'integer', example: 1),
+                    new OA\Property(property: 'course_id', type: 'integer', example: 1),
                     new OA\Property(property: 'questions_no', type: 'integer', example: 20),
                     new OA\Property(property: 'duration_mins', type: 'integer', example: 60),
                     new OA\Property(property: 'difficulty', type: 'string', example: 'medium'),
@@ -176,7 +176,7 @@ class ExamController extends Controller
             'questions_no' => $request->input('questions_no', $exam->questions_no),
             'difficulty' => $request->input('difficulty', $exam->difficulty),
             'duration_mins' => $request->input('duration_mins', $exam->duration_mins),
-            'skill_id' => $request->input('skill_id', $exam->skill_id),
+            'course_id' => $request->input('course_id', $exam->course_id),
             'active' => $request->input('active', $exam->active),
         ]);
 

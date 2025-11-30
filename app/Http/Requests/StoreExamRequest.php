@@ -30,7 +30,7 @@ class StoreExamRequest extends FormRequest
             'questions_no' => ['required', 'integer', 'min:1', 'max:127'],
             'difficulty' => ['required', 'integer', 'min:1', 'max:127'],
             'duration_mins' => ['required', 'integer', 'min:1', 'max:32767'],
-            'skill_id' => ['required', 'integer', 'exists:skills,id'],
+            'course_id' => ['required', 'integer', 'exists:courses,id'],
             'active' => ['sometimes', 'boolean'],
         ];
     }
@@ -57,8 +57,8 @@ class StoreExamRequest extends FormRequest
             'difficulty.integer' => 'The difficulty must be an integer.',
             'duration_mins.required' => 'The duration field is required.',
             'duration_mins.integer' => 'The duration must be an integer.',
-            'skill_id.required' => 'The skill field is required.',
-            'skill_id.exists' => 'The selected skill does not exist.',
+            'course_id.required' => 'The course field is required.',
+            'course_id.exists' => 'The selected course does not exist.',
             'active.boolean' => 'The active field must be true or false.',
         ];
     }

@@ -21,7 +21,7 @@ class CatResource extends JsonResource
                 'ar' => $this->getTranslation('name', 'ar'),
             ],
             'active' => $this->active,
-            'skills' => SkillResource::collection($this->whenLoaded('skills')),
+            'courses' => CourseResource::collection($this->whenLoaded('courses')),
         ];
     }
 }
